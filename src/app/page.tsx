@@ -1,101 +1,96 @@
-import Image from "next/image";
+import { Header } from '@/components/Header'
+import { StatsCard } from '@/components/StatsCard'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from '@/components/ui/table'
+
+const dummyData = [
+  {
+    id: 'bitcoin',
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    current_price: 65432.10,
+    market_cap: 1284567890123,
+    market_cap_rank: 1,
+    price_change_percentage_24h: 2.5,
+    price_change_percentage_7d: -1.2,
+    price_change_percentage_30d: 15.7,
+    total_volume: 28456789012,
+    circulating_supply: 19458321,
+    last_updated: '2024-03-20T10:00:00Z'
+  },
+  // Add 9 more similar entries with different values
+]
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8">Coin Stats Dashboard</h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <StatsCard 
+            title="Total Market Cap" 
+            value="$2.45T" 
+            change="2.5" 
+          />
+          <StatsCard 
+            title="24h Volume" 
+            value="$84.5B" 
+            change="-1.2" 
+          />
+          <StatsCard 
+            title="BTC Dominance" 
+            value="48.2%" 
+            change="0.8" 
+          />
+        </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Rank</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>24h %</TableHead>
+                <TableHead>7d %</TableHead>
+                <TableHead>Market Cap</TableHead>
+                <TableHead>Volume (24h)</TableHead>
+                <TableHead>Circulating Supply</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {dummyData.map((coin) => (
+                <TableRow key={coin.id}>
+                  <TableCell>{coin.market_cap_rank}</TableCell>
+                  <TableCell className="flex items-center gap-2">
+                    <span className="font-medium">{coin.name}</span>
+                    <span className="text-muted-foreground">{coin.symbol}</span>
+                  </TableCell>
+                  <TableCell>${coin.current_price.toLocaleString()}</TableCell>
+                  <TableCell className={coin.price_change_percentage_24h >= 0 ? 'text-green-500' : 'text-red-500'}>
+                    {coin.price_change_percentage_24h.toFixed(2)}%
+                  </TableCell>
+                  <TableCell className={coin.price_change_percentage_7d >= 0 ? 'text-green-500' : 'text-red-500'}>
+                    {coin.price_change_percentage_7d.toFixed(2)}%
+                  </TableCell>
+                  <TableCell>${(coin.market_cap / 1e9).toFixed(2)}B</TableCell>
+                  <TableCell>${(coin.total_volume / 1e9).toFixed(2)}B</TableCell>
+                  <TableCell>{coin.circulating_supply.toLocaleString()} {coin.symbol}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
 }
